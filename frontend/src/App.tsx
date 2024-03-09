@@ -16,9 +16,9 @@ function App(){
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const [username, setUsername] = useState('')
 const [validUsername, setValidUsername] = useState<boolean>(false)
-
-
-
+const [errorMessage, seterrorMessage] = useState('')
+const [localStorageUser, setLocalStorageUser] = useState<string>( '')
+const showLocalStorageUser: string| null = localStorage.getItem("user");
 
   useEffect(() => {
     if (socket) return;
@@ -35,16 +35,33 @@ const [validUsername, setValidUsername] = useState<boolean>(false)
   };
 
 
-
-const checkIfUsernameValid =()=>{
+ 
+const checkIfUsernameValid =  () =>{
   /* Här behöver vi skapa logik för att se om användarnamnet är unikt */
-setValidUsername(true)
-socket?.emit("allroomsForUser", username,  (rooms: Room[]) => {
-  setAllRooms(rooms);
+  if(username !== '' || localStorageUser !== ""){
+socket?.emit("allroomsForUser", localStorageUser,  username,(valid:boolean, rooms: Room[]) => {
+if(valid){
+ localStorage.setItem("user", username);
+  setAllRooms(rooms)
+  setValidUsername(valid)
+}
+  else if(!valid){
+seterrorMessage('Användare finns redan')
+setValidUsername(valid)
+setUsername('')
+}
 }) 
+} else{
+  seterrorMessage('Välj ett användarnamn')
+  }
+}
+const handelLocalStorageUser = () =>{
+if(showLocalStorageUser){
+setUsername(showLocalStorageUser)
+setLocalStorageUser(showLocalStorageUser)
 }
 
-
+}
 
 
 
@@ -52,17 +69,20 @@ socket?.emit("allroomsForUser", username,  (rooms: Room[]) => {
     <>
 {!validUsername && <article>
   <>
+  {showLocalStorageUser && <button onClick={handelLocalStorageUser} >{showLocalStorageUser}</button> }
+  
   <label htmlFor='username'> Användarnamn: </label>
 <input id="username" type="text" value={username} 
 onChange={(e:ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
 /> 
 <button onClick={checkIfUsernameValid}>Börja Chatta</button>
+{errorMessage && <p>{errorMessage}</p>}
   </>
   </article>
 }
 {validUsername && 
 <article> 
-  <h2>hello</h2>      
+  <h2>hello {username || localStorageUser}</h2>      
 <section>      
 {allRooms?.map((item) => (
         <div key={item.id}  onClick={() => {handleClick(item.roomName);}} >
