@@ -119,6 +119,20 @@ io.on("connection", (socket) => {
 socket.on("allroomsForUser",(localStorageUser, usernames, callback) => {
 let getvalid = false;
   let roomUserList:Room[] =[]
+
+
+/* lägger till användaren i main eller om användaren lämnar */
+socket.rooms.forEach((room) => {
+  socket.leave(room);
+});
+
+socket.join('main');
+/* add new user to room */
+const newUser  = roomList.map((list)  => { 
+  if(list.roomName === 'main' && !list.users.includes(localStorageUser)){
+  list.users.push(localStorageUser)
+   } })
+
 roomList.forEach(room =>{
 
   /* Lägger till användaren i main om användaren inte redan finns */
@@ -134,33 +148,13 @@ let array = item.users.filter((user) => user === usernames)
  localStorageUser = usernames     
       }
       
-
-/* lägger till användaren i main eller om användaren lämnar */
-      socket.rooms.forEach((room) => {
-        socket.leave(room);
-      });
-    
-      socket.join('main');
-    /* add new user to room */
-      const newUser  = roomList.map((list)  => { 
-        if(list.roomName === 'main' && !list.users.includes(localStorageUser)){
-        list.users.push(localStorageUser)
-         } })
-
-
 /* ser villka rum användaren är med i */
         const getroom = room.users.find((item) => item === localStorageUser)
         if(getroom){
          roomUserList.push({...room});
-        }} 
-
-
-    }   
-
-})
+        }} } })
  
  })
-
 
 
 if(roomUserList.length !== 0){
