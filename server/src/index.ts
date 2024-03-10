@@ -5,18 +5,20 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import moment from "moment-timezone"
 import { Room } from "./models/Room";
+import { data } from "jquery";
+import { Message } from "./models/Message";
 moment.tz.setDefault('Europe/Stockholm');
   moment.locale('sv');
 
 let roomList: Room[] = [
   {
-    id: '2024-03-07 15:12:04',
+    id: '2024-03-07 15:12:14',
     roomName: 'main',
 users:['loppan_123', 'grodanboll', 'pelle_kanin' ],
 
     messages: [{
       message: 'hej alla!',
-      cratedAt: '2024-03-05 12:14:04',
+      cratedAt: '2024-03-05 12:14:07',
       room: 'main', 
       user:{username:'loppan_123', image:''}
     },
@@ -36,7 +38,7 @@ users:['loppan_123', 'grodanboll', 'pelle_kanin' ],
     messages: [
       {
         message: 'hej hej',
-        cratedAt: '2024-03-07 15:12:04',
+        cratedAt: '2024-03-07 15:12:06',
         room: 'room 1', 
      user:{username:'loppan_123', image:''}
       },
@@ -51,7 +53,7 @@ users:['loppan_123', 'grodanboll', 'pelle_kanin' ],
   
     {
       message: 'hej alla!',
-      cratedAt: '2024-03-07 15:15:00',
+      cratedAt: '2024-03-07 15:15:10',
       room: 'room 1', 
    user:{username: 'grodanboll', image:''}
     }
@@ -72,7 +74,6 @@ app.get("/", (req, res) => {
 const server = createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 io.on("connection", (socket) => {  
-  console.log("a user connected");
 
 /* När användaren valt använtaren och kommer in på sidan så ges alla meddelanden som finns i main-room */
   socket.emit(
@@ -81,16 +82,42 @@ io.on("connection", (socket) => {
         if (item.roomName === 'main'){
            return {id: item.id, roomName: item.roomName, messages:item.messages}
         }   
-
-    })
+     
     
-    );
+      
+
+    }));
+
+
+    
+    socket?.on("send_message",(createNewMessage:Message) => { 
+
+      let newMessage = roomList.find((room) => room.roomName === createNewMessage.room);
+    if (newMessage) {
+   
+  
+      newMessage.messages.push(createNewMessage);
+      
+
+
+     
+      io.to(newMessage.roomName).emit(
+          "bid_accepted",
+          newMessage
+      );
+  } else {
+      console.log("no room found");
+  }
+
+   
+ 
+    })
+
 
 
 /* användare får all rum som den till hör skickat till sig */
 socket.on("allroomsForUser",(localStorageUser, usernames, callback) => {
 let getvalid = false;
-console.log('hello')
   let roomUserList:Room[] =[]
 roomList.forEach(room =>{
 
@@ -99,32 +126,33 @@ roomList.forEach(room =>{
     /* kollar i main, där alla användare loggas */
 if (item.roomName === 'main'){
 let array = item.users.filter((user) => user === usernames)
-console.log(localStorageUser)
-/* om ianvändarnamnet saknas kommer arrayens längd vara 0 */
-       if(array.length <= 0){
+
+/* om användarnamnet saknas kommer arrayens längd vara 0 */
+       if(array.length <= 0 || localStorageUser){
+        if(array.length <= 0){
         item.users.push(usernames)
-        
-/* soterar ut vilka rum användaren är med i */
-        const getroom = room.users.find((item) => item === usernames)
-        if(getroom){
-         roomUserList.push({...room});
-        }
+ localStorageUser = usernames     
+      }
+      
+
+/* lägger till användaren i main eller om användaren lämnar */
+      socket.rooms.forEach((room) => {
+        socket.leave(room);
+      });
+    
+      socket.join('main');
+    /* add new user to room */
+      const newUser  = roomList.map((list)  => { 
+        if(list.roomName === 'main' && !list.users.includes(localStorageUser)){
+        list.users.push(localStorageUser)
+         } })
 
 
-       } 
-
-/* om användaren har valt ett tidigare username - från localstorage */
-       if(localStorageUser){
-        /* soterar ut vilka rum användaren är med i */
+/* ser villka rum användaren är med i */
         const getroom = room.users.find((item) => item === localStorageUser)
         if(getroom){
          roomUserList.push({...room});
-        
-        } }
-
-
-
-
+        }} 
 
 
     }   
@@ -148,7 +176,7 @@ callback(false)
 socket.on("join_room", (roomName: string, username:string, callback) => {
 
   socket.rooms.forEach((room) => {
-    console.log("Leaving room: ", room);
+  
     socket.leave(room);
   });
 

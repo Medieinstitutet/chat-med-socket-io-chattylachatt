@@ -5,6 +5,8 @@ import { Socket, io } from "socket.io-client";
 import moment from 'moment-timezone';
 import 'moment/dist/locale/sv';
 import { Room } from "./models/Room";
+import { CreateMessage } from "./components/CreateMessage";
+import { Message } from "./models/Message";
 function App(){ 
 
 
@@ -14,7 +16,9 @@ function App(){
   const [socket, setSocket] = useState<Socket>();
   const [allRooms, setAllRooms] = useState<Room[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<Room>();
+  const [newMessage, setNewMessage] = useState('')
   const [username, setUsername] = useState('')
+  const [image, setImage] = useState<string>("")
 const [validUsername, setValidUsername] = useState<boolean>(false)
 const [errorMessage, seterrorMessage] = useState('')
 const [localStorageUser, setLocalStorageUser] = useState<string>( '')
@@ -22,16 +26,55 @@ const showLocalStorageUser: string| null = localStorage.getItem("user");
 
   useEffect(() => {
     if (socket) return;
+
     const s = io("http://localhost:3000");
+
+  s.on( "bid_accepted", (product: Room) => {
+   
+      setSelectedRoom(product);
+    });
+
     s.on("mainRoom", (mainRoomData: Room[]) => {
       setSelectedRoom(mainRoomData[0]);
+
+      
     });
+
+   
+
     setSocket(s);
-  }, [setSocket, socket, ]);
+  }, [setSocket, socket, selectedRoom]);
+
+
+
+
+  const PostMessage = () => {
+
+if(selectedRoom){
+      const createNewMessage:Message= {
+        message: newMessage,
+        room:selectedRoom.roomName,
+        cratedAt: moment().format('DD-MM-YYYY HH:mm:ss'),
+        user:{ username,
+          image}
+          
+    
+     }
+    
+    socket?.emit("send_message", createNewMessage)
+   setNewMessage('')
+   
+    }
+     
+
+     }
+
   const handleClick = (roomName: string) => {
     socket?.emit("join_room", roomName, username, (data: Room) => {
       setSelectedRoom(data);
+   
     });
+
   };
 
 
@@ -49,6 +92,7 @@ if(valid){
 seterrorMessage('Användare finns redan')
 setValidUsername(valid)
 setUsername('')
+setImage('')
 }
 }) 
 } else{
@@ -65,9 +109,14 @@ setLocalStorageUser(showLocalStorageUser)
 
 
 
+
+
+
+
+
   return (
     <>
-{!validUsername && <article>
+{!validUsername  && <article>
   <>
   {showLocalStorageUser && <button onClick={handelLocalStorageUser} >{showLocalStorageUser}</button> }
   
@@ -82,7 +131,11 @@ onChange={(e:ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
 }
 {validUsername && 
 <article> 
-  <h2>hello {username || localStorageUser}</h2>      
+  <h2>hello {username || localStorageUser}</h2>  
+
+
+  <CreateMessage  newMessage={newMessage} setNewMessage={setNewMessage}  PostMessage={PostMessage}  />
+
 <section>      
 {allRooms?.map((item) => (
         <div key={item.id}  onClick={() => {handleClick(item.roomName);}} >
