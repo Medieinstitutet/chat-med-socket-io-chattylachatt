@@ -92,7 +92,7 @@ if(valid){
   setAllRooms(rooms)
   setValidUsername(valid)
 
-  socket.on(`${username}` , (data) => {
+  socket.on(`${username}` , (data:Room[]) => {
     if(data){
 setAllRooms(data)
 
