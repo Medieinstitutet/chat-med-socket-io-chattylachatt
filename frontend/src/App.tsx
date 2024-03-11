@@ -6,6 +6,8 @@ import { Socket, io } from "socket.io-client";
 import moment from 'moment-timezone';
 import 'moment/dist/locale/sv';
 import { Room } from "./models/Room";
+import { CreateMessage } from "./components/CreateMessage";
+import { Message } from "./models/Message";
 import AvatarPicker from "./components/AvatarPicker";
 function App(){ 
 
@@ -17,35 +19,99 @@ function App(){
   const [socket, setSocket] = useState<Socket>();
   const [allRooms, setAllRooms] = useState<Room[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<Room>();
+  const [newMessage, setNewMessage] = useState('')
   const [username, setUsername] = useState('')
+  const [image, setImage] = useState<string>("")
 const [validUsername, setValidUsername] = useState<boolean>(false)
-
-
-
+const [errorMessage, seterrorMessage] = useState('')
+const [localStorageUser, setLocalStorageUser] = useState<string>( '')
+const showLocalStorageUser: string| null = localStorage.getItem("user");
 
   useEffect(() => {
     if (socket) return;
+
     const s = io("http://localhost:3000");
+
+  s.on( "bid_accepted", (product: Room) => {
+   
+      setSelectedRoom(product);
+    });
+
     s.on("mainRoom", (mainRoomData: Room[]) => {
       setSelectedRoom(mainRoomData[0]);
+
+      
     });
+
+   
+
     setSocket(s);
-  }, [setSocket, socket, ]);
+  }, [setSocket, socket, selectedRoom]);
+
+
+
+
+  const PostMessage = () => {
+
+if(selectedRoom){
+      const createNewMessage:Message= {
+        message: newMessage,
+        room:selectedRoom.roomName,
+        cratedAt: moment().format('DD-MM-YYYY HH:mm:ss'),
+        user:{ username,
+          image}
+          
+    
+     }
+    
+    socket?.emit("send_message", createNewMessage)
+   setNewMessage('')
+   
+    }
+     
+
+     }
+
   const handleClick = (roomName: string) => {
     socket?.emit("join_room", roomName, username, (data: Room) => {
       setSelectedRoom(data);
+   
     });
+
   };
 
 
-
-const checkIfUsernameValid =()=>{
+ 
+const checkIfUsernameValid =  () =>{
   /* Här behöver vi skapa logik för att se om användarnamnet är unikt */
-setValidUsername(true)
-socket?.emit("allroomsForUser", username,  (rooms: Room[]) => {
-  setAllRooms(rooms);
-}) 
+  if(username !== '' || localStorageUser !== ""){
+socket?.emit("allroomsForUser", localStorageUser,  username,(valid:boolean, rooms: Room[]) => {
+if(valid){
+ localStorage.setItem("user", username);
+  setAllRooms(rooms)
+  setValidUsername(valid)
 }
+  else if(!valid){
+seterrorMessage('Användare finns redan')
+setValidUsername(valid)
+setUsername('')
+setImage('')
+}
+}) 
+} else{
+  seterrorMessage('Välj ett användarnamn')
+  }
+}
+const handelLocalStorageUser = () =>{
+if(showLocalStorageUser){
+setUsername(showLocalStorageUser)
+setLocalStorageUser(showLocalStorageUser)
+}
+
+}
+
+
+
 
 
 
@@ -56,8 +122,10 @@ socket?.emit("allroomsForUser", username,  (rooms: Room[]) => {
     <div className="app-login">
 
       <div className="container-login">
-{!validUsername && <article>
+{!validUsername  && <article>
   <>
+  {showLocalStorageUser && <button onClick={handelLocalStorageUser} >{showLocalStorageUser}</button> }
+  
 
   <div className="container-content">
       <h1> Välkommen till chattylachatt </h1>
@@ -82,6 +150,7 @@ onChange={(e:ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
 <button 
 className="start-chat-button"
 onClick={checkIfUsernameValid}>Börja Chatta</button>
+{errorMessage && <p>{errorMessage}</p>}
   </>
   </article>
   
@@ -89,7 +158,11 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
 </div>
 {validUsername && 
 <article> 
-  <h2>hello</h2>      
+  <h2>hello {username || localStorageUser}</h2>  
+
+
+  <CreateMessage  newMessage={newMessage} setNewMessage={setNewMessage}  PostMessage={PostMessage}  />
+
 <section>      
 {allRooms?.map((item) => (
         <div key={item.id}  onClick={() => {handleClick(item.roomName);}} >
