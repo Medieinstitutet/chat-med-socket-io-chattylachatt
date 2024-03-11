@@ -92,30 +92,47 @@ io.on("connection", (socket) => {
  
 socket?.on("create_room",(username, searchUserForRoom,  callback) => {
      
+
+
+
+
   let roomExist =  roomList.find(item => item.roomName.includes(username) && item.roomName.includes(searchUserForRoom))
 
   const userExist = roomList.find(item => item.users.includes(searchUserForRoom))
 if(!roomExist && userExist){
-
-
-
 roomList.push({
-
-
 id: moment().format("YYYY-MM-DD HH-MM-ss"),
 roomName: `${username} ${searchUserForRoom}`,
 users:[username, searchUserForRoom ],
 messages: []
-
 })
 
-
-
-
-callback(roomList)
-
-
 }
+
+
+let r: Room[] = []
+let otherRoom: Room[] = []
+ roomList.map(item => {
+  if(item.users.includes(username)){
+  
+  r.push(item)
+}
+if(item.users.includes(searchUserForRoom)){
+  
+  otherRoom.push(item)
+}
+})
+
+if(r){
+
+callback(r)
+io.emit(`${searchUserForRoom}`,
+otherRoom
+);
+
+ }
+
+
 
 
   })
@@ -172,20 +189,21 @@ roomList.forEach(room =>{
   roomList.map((item) => {
     /* kollar i main, där alla användare loggas */
 if (item.roomName === 'main'){
-let array = item.users.filter((user) => user === usernames)
+let array = item.users.filter((user) => user === usernames || user === localStorageUser)
 
 /* om användarnamnet saknas kommer arrayens längd vara 0 */
-       if(array.length <= 0 || localStorageUser){
+      
         if(array.length <= 0){
         item.users.push(usernames)
  localStorageUser = usernames     
       }
+   
       
 /* ser villka rum användaren är med i */
         const getroom = room.users.find((item) => item === localStorageUser)
         if(getroom){
          roomUserList.push({...room});
-        }} } })
+        }}  })
  
  })
 

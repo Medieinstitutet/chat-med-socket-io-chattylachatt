@@ -28,9 +28,7 @@ const [searchUserForRoom, setsearchUserForRoom] = useState<string>('')
     if (socket) return;
 
     const s = io("http://localhost:3000");
-
   s.on( "bid_accepted", (product: Room) => {
-   
       setSelectedRoom(product);
     });
 
@@ -40,10 +38,16 @@ const [searchUserForRoom, setsearchUserForRoom] = useState<string>('')
       
     });
 
-   
+
+    s.on(`${username}` , (product) => {
+      console.log(product)
+    });
+    s.on(`${localStorageUser}` , (product) => {
+      console.log(product)
+    });
 
     setSocket(s);
-  }, [setSocket, socket, selectedRoom]);
+  }, [setSocket, socket, selectedRoom,localStorageUser]);
 
 
 
@@ -87,6 +91,17 @@ if(valid){
  localStorage.setItem("user", username);
   setAllRooms(rooms)
   setValidUsername(valid)
+
+  socket.on(`${username}` , (data) => {
+    if(data){
+setAllRooms(data)
+
+    }
+  });
+
+
+
+
 }
   else if(!valid){
 seterrorMessage('Användare finns redan')
@@ -117,22 +132,31 @@ const handleFindRoom = ()=> {
    
     socket?.emit("create_room", username, searchUserForRoom, (data: Room[]) => {
       setAllRooms(data);
+     if(data){
+
+      socket?.emit("join_room", `${username} ${searchUserForRoom}`, username, (data: Room) => {
+        setSelectedRoom(data);
+     
+      });
+
+  
+
+     }
+    
+   
    
     })
    
-   
+    
+
    
   }
   }
 
 
 const handelAddUserSearchRoom = (user:string)  =>  {
- 
   if(username !== user){
-  console.log(username)
     setsearchUserForRoom(user)
-   
-   
   }
    
    
