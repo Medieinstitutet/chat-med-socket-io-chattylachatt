@@ -1,11 +1,14 @@
 import  { ChangeEvent, useEffect, useState } from "react"; 
 import "./App.css";
 import './sass/style.scss';
+import './sass/_login.scss';
 import { Socket, io } from "socket.io-client";
 import moment from 'moment-timezone';
 import 'moment/dist/locale/sv';
 import { Room } from "./models/Room";
+import AvatarPicker from "./components/AvatarPicker";
 function App(){ 
+
 
 
 
@@ -50,16 +53,40 @@ socket?.emit("allroomsForUser", username,  (rooms: Room[]) => {
 
   return (
     <>
+    <div className="app-login">
+
+      <div className="container-login">
 {!validUsername && <article>
   <>
-  <label htmlFor='username'> Användarnamn: </label>
-<input id="username" type="text" value={username} 
+
+  <div className="container-content">
+      <h1> Välkommen till chattylachatt </h1>
+      <p>Ett enkelt och roligt sätt att kommunicera i realtid. 
+        Ange ditt unika användarnamn och börja chatta med vänner 
+        och bekanta. Skapa eller anslut till olika kanaler för 
+        att dela tankar, idéer och skratt. Bli en del av vårt 
+        gemenskapliga digitala rum och upplev en ny dimension 
+        av interaktion. Let's chat with Chattylachatt.</p>
+      </div>
+<div className="container-avatar">
+  <AvatarPicker onSelect={(avatar) => console.log(avatar)} />
+  </div>
+      
+  <label htmlFor='username' className='user-name-login'> Användarnamn: </label>
+<input 
+className="username-input" 
+id="username" type="text" 
+value={username} 
 onChange={(e:ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
 /> 
-<button onClick={checkIfUsernameValid}>Börja Chatta</button>
+<button 
+className="start-chat-button"
+onClick={checkIfUsernameValid}>Börja Chatta</button>
   </>
   </article>
+  
 }
+</div>
 {validUsername && 
 <article> 
   <h2>hello</h2>      
@@ -80,6 +107,8 @@ onChange={(e:ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
       ))}
 </article>
  }
+ 
+ </div>
       </>
   )
    }
