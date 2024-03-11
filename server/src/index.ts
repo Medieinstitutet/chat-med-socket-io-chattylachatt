@@ -5,7 +5,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import moment from "moment-timezone"
 import { Room } from "./models/Room";
-import { data } from "jquery";
+// import { data } from "jquery";
 import { Message } from "./models/Message";
 moment.tz.setDefault('Europe/Stockholm');
   moment.locale('sv');
@@ -88,9 +88,42 @@ io.on("connection", (socket) => {
 
     }));
 
+/* skapa ett rum om ett rum inte redan finns genom att kontrollera om username och searchUserForRoom inkluderas tillsammans vilket i rummets namn */
+ 
+socket?.on("create_room",(username, searchUserForRoom,  callback) => {
+     
+  let roomExist =  roomList.find(item => item.roomName.includes(username) && item.roomName.includes(searchUserForRoom))
+
+  const userExist = roomList.find(item => item.users.includes(searchUserForRoom))
+if(!roomExist && userExist){
+
+
+
+roomList.push({
+
+
+id: moment().format("YYYY-MM-DD HH-MM-ss"),
+roomName: `${username} ${searchUserForRoom}`,
+users:[username, searchUserForRoom ],
+messages: []
+
+})
+
+
+
+
+callback(roomList)
+
+
+}
+
+
+  })
+
 
     
     socket?.on("send_message",(createNewMessage:Message) => { 
+  
 
       let newMessage = roomList.find((room) => room.roomName === createNewMessage.room);
     if (newMessage) {

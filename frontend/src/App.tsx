@@ -10,10 +10,6 @@ import { CreateMessage } from "./components/CreateMessage";
 import { Message } from "./models/Message";
 import AvatarPicker from "./components/AvatarPicker";
 function App(){ 
-
-
-
-
   moment.tz.setDefault('Europe/Stockholm');
   moment.locale('sv');
   const [socket, setSocket] = useState<Socket>();
@@ -26,6 +22,7 @@ const [validUsername, setValidUsername] = useState<boolean>(false)
 const [errorMessage, seterrorMessage] = useState('')
 const [localStorageUser, setLocalStorageUser] = useState<string>( '')
 const showLocalStorageUser: string| null = localStorage.getItem("user");
+const [searchUserForRoom, setsearchUserForRoom] = useState<string>('')
 
   useEffect(() => {
     if (socket) return;
@@ -112,8 +109,35 @@ setLocalStorageUser(showLocalStorageUser)
 
 
 
+const handleFindRoom = ()=> {
+ 
+  if(searchUserForRoom){
+   
+   
+   
+    socket?.emit("create_room", username, searchUserForRoom, (data: Room[]) => {
+      setAllRooms(data);
+   
+    })
+   
+   
+   
+  }
+  }
 
 
+const handelAddUserSearchRoom = (user:string)  =>  {
+ 
+  if(username !== user){
+  console.log(username)
+    setsearchUserForRoom(user)
+   
+   
+  }
+   
+   
+   
+  }
 
 
 
@@ -164,6 +188,13 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
   <CreateMessage  newMessage={newMessage} setNewMessage={setNewMessage}  PostMessage={PostMessage}  />
 
 <section>      
+<section>
+ 
+ 
+ <input type="text" value={searchUserForRoom}  onChange={(e:ChangeEvent<HTMLInputElement>) => setsearchUserForRoom(e.target.value)} />
+ <button onClick={handleFindRoom}> Skapa rum </button>
+   </section>
+
 {allRooms?.map((item) => (
         <div key={item.id}  onClick={() => {handleClick(item.roomName);}} >
         <p> {item.roomName} </p> 
@@ -175,7 +206,11 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
         <div key={item.cratedAt + item.user.username } >
           <p> {item.cratedAt} </p> 
         <p> {item.message} </p> 
-        <p> {item.user.username} </p> 
+        <section onClick={() => handelAddUserSearchRoom(item.user.username)}>
+        <img src={item.user.image} alt="" />
+        <p> {item.user.username} </p>
+ 
+        </section>
         </div>
       ))}
 </article>
