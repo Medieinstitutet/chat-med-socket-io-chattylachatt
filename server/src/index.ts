@@ -164,58 +164,62 @@ otherRoom
     })
 
 
-
 /* användare får all rum som den till hör skickat till sig */
 socket.on("allroomsForUser",(localStorageUser, usernames, callback) => {
-let getvalid = false;
-  let roomUserList:Room[] =[]
+  let getvalid = false;
 
+    let roomUserList:Room[] =[]
+  roomList.forEach(room =>{
+  
+    /* Lägger till användaren i main om användaren inte redan finns */
+    roomList.map((item) => {
+      /* kollar i main, där alla användare loggas */
+  if (item.roomName === 'main'){
+  let array = item.users.filter((user) => user === usernames)
 
-/* lägger till användaren i main eller om användaren lämnar */
-socket.rooms.forEach((room) => {
-  socket.leave(room);
-});
-
-socket.join('main');
-/* add new user to room */
-const newUser  = roomList.map((list)  => { 
-  if(list.roomName === 'main' && !list.users.includes(localStorageUser)){
-  list.users.push(localStorageUser)
-   } })
-
-roomList.forEach(room =>{
-
-  /* Lägger till användaren i main om användaren inte redan finns */
-  roomList.map((item) => {
-    /* kollar i main, där alla användare loggas */
-if (item.roomName === 'main'){
-let array = item.users.filter((user) => user === usernames || user === localStorageUser)
-
-/* om användarnamnet saknas kommer arrayens längd vara 0 */
-      
-        if(array.length <= 0){
-        item.users.push(usernames)
- localStorageUser = usernames     
-      }
-   
-      
-/* ser villka rum användaren är med i */
-        const getroom = room.users.find((item) => item === localStorageUser)
-        if(getroom){
-         roomUserList.push({...room});
-        }}  })
- 
- })
-
-
-if(roomUserList.length !== 0){
-
-  callback(true, roomUserList); 
-}else{
-callback(false)
-}
- 
-})   
+  /* om ianvändarnamnet saknas kommer arrayens längd vara 0 */
+         if(array.length <= 0){
+          item.users.push(usernames)
+  
+  /* soterar ut vilka rum användaren är med i */
+          const getroom = room.users.find((item) => item === usernames)
+          if(getroom){
+           roomUserList.push({...room});
+          }
+  
+  
+         } 
+  
+  /* om användaren har valt ett tidigare username - från localstorage */
+         if(localStorageUser){
+          /* soterar ut vilka rum användaren är med i */
+          const getroom = room.users.find((item) => item === localStorageUser)
+          if(getroom){
+           roomUserList.push({...room});
+  
+          } }
+  
+  
+  
+  
+  
+  
+      }   
+  
+  })
+  
+   })
+  
+  
+  
+  if(roomUserList.length !== 0){
+  
+    callback(true, roomUserList); 
+  }else{
+  callback(false)
+  }
+  
+  })    
 
 /* Användare ansluter till rum */
 socket.on("join_room", (roomName: string, username:string, callback) => {

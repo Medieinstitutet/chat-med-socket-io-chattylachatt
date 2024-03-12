@@ -7,6 +7,7 @@ import { Room } from "./models/Room";
 import { CreateMessage } from "./components/CreateMessage";
 import { Message } from "./models/Message";
 import AvatarPicker from "./components/AvatarPicker";
+import { AllMessages } from "./components/AllMessages";
 function App(){ 
   moment.tz.setDefault('Europe/Stockholm');
   moment.locale('sv');
@@ -83,13 +84,19 @@ if(selectedRoom){
  
 const checkIfUsernameValid =  () =>{
   /* Här behöver vi skapa logik för att se om användarnamnet är unikt */
-  if(username !== '' || localStorageUser !== "" || image !== ''){
+
+if(image !== ''){
+
+  if(username !== '' || localStorageUser !== "" ){
 socket?.emit("allroomsForUser", localStorageUser,  username, (valid:boolean, rooms: Room[]) => {
 if(valid){
+  socket?.emit("join_room", 'main', username, (data: Room) => {
+    setSelectedRoom(data);
+ 
+  });
  localStorage.setItem("user", username);
   setAllRooms(rooms)
   setValidUsername(valid)
-
   socket.on(`${username}` , (data:Room[]) => {
     if(data){
 setAllRooms(data)
@@ -110,8 +117,12 @@ setImage('')
 }) 
 } else{
   seterrorMessage('Välj ett användarnamn')
-  }
+  }}
+  else{
+    seterrorMessage('Väljen Avatar')
+    }
 }
+
 const handelLocalStorageUser = () =>{
 if(showLocalStorageUser){
 setUsername(showLocalStorageUser)
@@ -227,21 +238,24 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
         </div>
       ))}
 </section>
-    <h2>{selectedRoom?.roomName}</h2>
-      {selectedRoom?.messages.map((item) => (
-        <div key={item.cratedAt + item.user.username } >
-          <p> {item.cratedAt} </p> 
-        <p> {item.message} </p> 
-        <section onClick={() => handelAddUserSearchRoom(item.user.username)}>
-        <img src={item.user.image} alt="" />
-        <p> {item.user.username} </p>
- 
-        </section>
-        </div>
-      ))}
+<h2>{selectedRoom?.roomName}</h2>
+<section className="allmessageContainer"> 
+   
+<AllMessages selectedRoom={selectedRoom} handelAddUserSearchRoom={handelAddUserSearchRoom} />  
+
+</section>
+
+
+
+
+
+
+
+
+
 </article>
  }
- 
+
 
       </>
   )
