@@ -137,8 +137,6 @@ const handleFindRoom = ()=> {
  
   if(searchUserForRoom){
    
-   
-   
     socket?.emit("create_room", username, searchUserForRoom, (data: Room[]) => {
       setAllRooms(data);
      if(data){
@@ -241,7 +239,7 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
 <h2>{selectedRoom?.roomName}</h2>
 <section className="allmessageContainer"> 
    
-<AllMessages selectedRoom={selectedRoom} handelAddUserSearchRoom={handelAddUserSearchRoom} showLocalStorageUser={showLocalStorageUser} />  
+<AllMessages selectedRoom={selectedRoom} handelAddUserSearchRoom={handelAddUserSearchRoom} />  
 
 </section>
 
