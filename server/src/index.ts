@@ -20,13 +20,13 @@ users:['loppan_123', 'grodanboll', 'pelle_kanin' ],
       message: 'hej alla!',
       cratedAt: '2024-03-05 12:14:07',
       room: 'main', 
-      user:{username:'loppan_123', image:''}
+      user:{username:'loppan_123', image:'/src/assets/avatar5.webp'}
     },
     {
       message: 'hej loppan!',
       cratedAt: '2024-03-05 15:12:04',
       room: 'main', 
-   user:{ username:'grodanboll', image:''}
+   user:{ username:'grodanboll', image:'/src/assets/avatar3.webp'}
     }]
   },
 
@@ -40,7 +40,7 @@ users:['loppan_123', 'grodanboll', 'pelle_kanin' ],
         message: 'hej hej',
         cratedAt: '2024-03-07 15:12:06',
         room: 'room 1', 
-     user:{username:'loppan_123', image:''}
+     user:{username:'loppan_123', image:'/src/assets/avatar3.webp'}
       },
       
       
@@ -48,14 +48,14 @@ users:['loppan_123', 'grodanboll', 'pelle_kanin' ],
       message: 'hej loppan!',
       cratedAt: '2024-03-07 15:15:00',
       room: 'room 1', 
-   user:{username: 'pelle_kanin', image:''}
+   user:{username: 'pelle_kanin', image:'/src/assets/avatar4.webp'}
     },
   
     {
       message: 'hej alla!',
       cratedAt: '2024-03-07 15:15:10',
       room: 'room 1', 
-   user:{username: 'grodanboll', image:''}
+   user:{username: 'grodanboll', image:'/src/assets/avatar5.webp'}
     }
   
   ]

@@ -1,54 +1,44 @@
 
 .avatar-picker-container {
-    width: 100%;
-    height: auto;
-    @media (min-width: 768px) {
     position: relative;
-    width: 400px;
-    height: 200px;  
-    }  
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
 }
 
 .avatar-picker-container h3 {
-    @media (min-width: 768px) {
+ 
     text-align: center;
     margin-bottom: 20px;
     text-transform: uppercase;
     font-size: 1rem;
-    margin-top: 7%;
-    left:63%;
     width: 100%;
-    position: absolute;
-    }
+ 
+    
 }
 .avatar-list {
-    width: 60px;
-    height: 60px;
-    gap: 16px;
-    position: absolute;
+  
+height: 5rem;
+width: clamp(300px, 100%, 600px);
     display: flex;
     justify-content: space-between;
-    top:70%;
-    cursor: pointer;
-    @media (min-width: 768px) {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    left:65%;
-    top:40%;
-    gap: 16px;
+    img {
+        width:15%;
+        object-fit: contain;
+     
     }
+    
 }
 
-.avatar-item img {
-    width: 100%;
-    height: auto;
-}
+ 
 .avatar-item {  
     margin:5px;
     transition: transform 0.2s ease-in-out;
 }
 
-.avatar-item.selected {
-    transform: scale(1.2);
+.avatar {
+    transform: scale(1.3);
 }

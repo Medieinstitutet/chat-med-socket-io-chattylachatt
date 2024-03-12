@@ -4,19 +4,21 @@ import avatar2 from '../assets/avatar2.jpg';
 import avatar3 from '../assets/avatar3.webp';
 import avatar4 from '../assets/avatar4.png';
 import avatar5 from '../assets/avatar5.webp';
-import '../sass/_AvatarPicker.scss';
+
 
 interface AvatarPickerProps {
   onSelect: (avatar: string) => void;
+  setImage: (image:string) =>void
 }
 
-const AvatarPicker: React.FC<AvatarPickerProps> = ({ onSelect }) => {
+const AvatarPicker = ({ onSelect, setImage }:AvatarPickerProps) => {
   const avatars: string[] = [avatar1, avatar2, avatar3, avatar4, avatar5,]; 
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
 
   const handleAvatarSelect = (avatar: string) => {
     setSelectedAvatar(avatar);
     onSelect(avatar); 
+    setImage(avatar)
   };
 
   return (
@@ -29,7 +31,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ onSelect }) => {
             src={avatar}
             alt={`Avatar ${avatar}`}
             onClick={() => handleAvatarSelect(avatar)}
-            className={selectedAvatar === avatar ? 'selected' : ''}
+            className={selectedAvatar === avatar ? 'avatar' : ''}
           />
         ))}
       </div>

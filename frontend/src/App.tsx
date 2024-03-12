@@ -1,7 +1,5 @@
 import  { ChangeEvent, useEffect, useState } from "react"; 
-import "./App.css";
 import './sass/style.scss';
-import './sass/_login.scss';
 import { Socket, io } from "socket.io-client";
 import moment from 'moment-timezone';
 import 'moment/dist/locale/sv';
@@ -85,8 +83,8 @@ if(selectedRoom){
  
 const checkIfUsernameValid =  () =>{
   /* Här behöver vi skapa logik för att se om användarnamnet är unikt */
-  if(username !== '' || localStorageUser !== ""){
-socket?.emit("allroomsForUser", localStorageUser,  username,(valid:boolean, rooms: Room[]) => {
+  if(username !== '' || localStorageUser !== "" || image !== ''){
+socket?.emit("allroomsForUser", localStorageUser,  username, (valid:boolean, rooms: Room[]) => {
 if(valid){
  localStorage.setItem("user", username);
   setAllRooms(rooms)
@@ -167,10 +165,10 @@ const handelAddUserSearchRoom = (user:string)  =>  {
 
   return (
     <>
-    <div className="app-login">
+    
+{!validUsername  && <div className="app-login">
 
-      <div className="container-login">
-{!validUsername  && <article>
+<div className="container-login"> 
   <>
   {showLocalStorageUser && <button onClick={handelLocalStorageUser} >{showLocalStorageUser}</button> }
   
@@ -185,9 +183,9 @@ const handelAddUserSearchRoom = (user:string)  =>  {
         av interaktion. Let's chat with Chattylachatt.</p>
       </div>
 <div className="container-avatar">
-  <AvatarPicker onSelect={(avatar) => console.log(avatar)} />
+  <AvatarPicker onSelect={(avatar) => console.log(avatar)} setImage={setImage} />
   </div>
-      
+      <section className="btnAndUsername"> 
   <label htmlFor='username' className='user-name-login'> Användarnamn: </label>
 <input 
 className="username-input" 
@@ -199,11 +197,15 @@ onChange={(e:ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
 className="start-chat-button"
 onClick={checkIfUsernameValid}>Börja Chatta</button>
 {errorMessage && <p>{errorMessage}</p>}
+</section>
   </>
-  </article>
+  </div>
+  </div>
+
+  
   
 }
-</div>
+
 {validUsername && 
 <article> 
   <h2>hello {username || localStorageUser}</h2>  
@@ -240,7 +242,7 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
 </article>
  }
  
- </div>
+
       </>
   )
    }
