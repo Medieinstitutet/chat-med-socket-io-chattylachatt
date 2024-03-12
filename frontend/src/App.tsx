@@ -241,7 +241,7 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
 <h2>{selectedRoom?.roomName}</h2>
 <section className="allmessageContainer"> 
    
-<AllMessages selectedRoom={selectedRoom} handelAddUserSearchRoom={handelAddUserSearchRoom} />  
+<AllMessages selectedRoom={selectedRoom} handelAddUserSearchRoom={handelAddUserSearchRoom} showLocalStorageUser={showLocalStorageUser} />  
 
 </section>
 
