@@ -1,0 +1,49 @@
+.allmessageContainer{
+width: 100%;
+height: 80%;
+min-height: fit-content;
+background-color: #2D2E57;
+overflow-y: scroll;
+
+
+.user, .notUser{
+display: flex;
+flex-direction: column;
+width: 88%;
+margin: 1rem 0;
+padding: 0 6%;
+
+} 
+.user{
+
+  
+    align-items: end;
+
+
+    
+    } 
+.notUser{
+
+    align-items: start;
+
+
+}
+
+
+img{
+
+height: 50px;
+border-radius: 50%;
+}
+
+
+}
+.allmessageContainer::-webkit-scrollbar {
+    display: none;
+  }
+  
+
+  .allmessageContainer {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }

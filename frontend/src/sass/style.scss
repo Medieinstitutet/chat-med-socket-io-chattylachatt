@@ -2,7 +2,9 @@
 @use 'mixins';
 @use 'login';
 @use 'AvatarPicker';
-
+@use 'allmessages';
+@use 'messageInputAndBtn';
+@use 'findRoom';
 
 #root {
   margin: 0;
@@ -13,6 +15,18 @@
   align-items: center;
   justify-content: center;
 
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+
+* {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 
@@ -34,6 +48,65 @@ body {
 body::-webkit-scrollbar {
   display: none;
 }
+
+
+.chatContainer {
+border-radius: 5px;
+overflow: hidden;
+  width: 95%;
+  max-width: 800px;
+  height: 70vh;
+  min-height: 500px;
+  background-color: #2D2E57;
+  display: flex;
+  box-shadow: 0px 0px 10px 0px #000000;
+
+  h2 {
+    padding: 0;
+    margin: 0;
+    height: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+  }
+
+  .sectionOne {
+    width: 20%;
+    background-color: #a5a5bc34;
+
+    .allRoomsContainer {
+      padding-left:   6% ;
+      height: 80%;
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+
+  }
+
+  .sectionTwo {
+
+    width: 80%;
+
+
+
+
+
+  }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
 
 .app-login {
   display: flex;

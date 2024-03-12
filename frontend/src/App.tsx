@@ -1,4 +1,5 @@
 import  { ChangeEvent, useEffect, useState } from "react"; 
+import { FaSearch } from "react-icons/fa";
 import './sass/style.scss';
 import { Socket, io } from "socket.io-client";
 import moment from 'moment-timezone';
@@ -200,6 +201,8 @@ const handelAddUserSearchRoom = (user:string)  =>  {
 className="username-input" 
 id="username" type="text" 
 value={username} 
+maxLength={20}
+
 onChange={(e:ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
 /> 
 <button 
@@ -216,30 +219,39 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
 }
 
 {validUsername && 
-<article> 
-  <h2>hello {username || localStorageUser}</h2>  
-
-
-  <CreateMessage  newMessage={newMessage} setNewMessage={setNewMessage}  PostMessage={PostMessage}  />
-
-<section>      
-<section>
+<article className="chatContainer"> 
  
+
+
  
- <input type="text" value={searchUserForRoom}  onChange={(e:ChangeEvent<HTMLInputElement>) => setsearchUserForRoom(e.target.value)} />
- <button onClick={handleFindRoom}> Skapa rum </button>
+
+<section className="sectionOne">      
+<section className="findRoomContainer">
+  <section className="usernameAndImg"> 
+ 
+ <img src={image} />
+ <h2>{username}</h2>
+ </section>
+ <input className="findRoomInput" type="text" value={searchUserForRoom} maxLength={20}  onChange={(e:ChangeEvent<HTMLInputElement>) => setsearchUserForRoom(e.target.value)} />
+ <button className="findRoomBtn" onClick={handleFindRoom}> <FaSearch /> </button>
    </section>
-
+<section className="allRoomsContainer"> 
 {allRooms?.map((item) => (
         <div key={item.id}  onClick={() => {handleClick(item.roomName);}} >
-        <p> {item.roomName} </p> 
+        <p> {item.roomName.replace(`${username}`,'')} </p> 
+       
         </div>
       ))}
+      </section>
 </section>
-<h2>{selectedRoom?.roomName}</h2>
+
+
+<section className="sectionTwo">         
+
+<h2>{ selectedRoom?.roomName.replace(`${username}`,'')}</h2>
 <section className="allmessageContainer"> 
    
-<AllMessages selectedRoom={selectedRoom} handelAddUserSearchRoom={handelAddUserSearchRoom} />  
+<AllMessages selectedRoom={selectedRoom} handelAddUserSearchRoom={handelAddUserSearchRoom} username={username} localStorageUser={localStorageUser} />  
 
 </section>
 
@@ -248,9 +260,9 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
 
 
 
+<CreateMessage  newMessage={newMessage} setNewMessage={setNewMessage}  PostMessage={PostMessage}  />
 
-
-
+</section>
 </article>
  }
 

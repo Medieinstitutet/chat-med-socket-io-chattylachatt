@@ -16,10 +16,11 @@ export const CreateMessage = ({PostMessage, newMessage, setNewMessage}:Props) =>
     <>
   
     
-    <div >
-      <label htmlFor='newMessage'>Skicka ett meddelande</label>
-      <textarea id="newMessage" cols={30} rows={10} maxLength={250} minLength={3}  value={newMessage} onChange={(e:ChangeEvent<HTMLTextAreaElement>) => setNewMessage(e.target.value)}></textarea>
+    <div className='messageInputAndBtnContainer'>
+      <section className='messageInputAndBtn'> 
+      <input className='newMessageInput'  placeholder='Skicka ett meddelande' maxLength={50} minLength={3}  value={newMessage} onChange={(e:ChangeEvent<HTMLTextAreaElement>) => setNewMessage(e.target.value)}></input>
       <button onClick={PostMessage}>Skicka</button>
+      </section>
        </div>
     
     

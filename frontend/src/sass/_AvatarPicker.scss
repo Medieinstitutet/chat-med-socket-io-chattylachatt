@@ -24,11 +24,14 @@
 height: 5rem;
 width: clamp(300px, 100%, 600px);
     display: flex;
+
     justify-content: space-between;
     img {
-        width:15%;
+        width:60px;
+        height: 60px;
         object-fit: contain;
-     
+        border-radius: 50%;
+        cursor: pointer;
     }
     
 }
@@ -37,6 +40,7 @@ width: clamp(300px, 100%, 600px);
 .avatar-item {  
     margin:5px;
     transition: transform 0.2s ease-in-out;
+  
 }
 
 .avatar {
