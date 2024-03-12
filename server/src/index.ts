@@ -107,7 +107,6 @@ users:[username, searchUserForRoom ],
 messages: []
 })
 
-}
 
 
 let r: Room[] = []
@@ -132,7 +131,7 @@ otherRoom
 
  }
 
-
+}
 
 
   })
