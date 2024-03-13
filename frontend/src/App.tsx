@@ -331,7 +331,12 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
 <h2>{ selectedRoom?.roomName.replace(`${username}`,'')}</h2>
 <section className="allmessageContainer"> 
    
-<AllMessages selectedRoom={selectedRoom} handelAddUserSearchRoom={handelAddUserSearchRoom} username={username} localStorageUser={localStorageUser} />  
+<AllMessages 
+selectedRoom={selectedRoom} 
+handelAddUserSearchRoom={handelAddUserSearchRoom} 
+username={username} 
+currentUserUsername={username}
+localStorageUser={localStorageUser} />  
 
 </section>
 
