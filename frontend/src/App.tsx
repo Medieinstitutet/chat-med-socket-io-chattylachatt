@@ -17,12 +17,14 @@ function App(){
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const [newMessage, setNewMessage] = useState('')
   const [username, setUsername] = useState('')
-  const [image, setImage] = useState<string>("")
 const [validUsername, setValidUsername] = useState<boolean>(false)
 const [errorMessage, seterrorMessage] = useState('')
 const [localStorageUser, setLocalStorageUser] = useState<string>( '')
+const [image, setImage] = useState<string>('')
+const localstorageImage: string| null = localStorage.getItem("image")
 const showLocalStorageUser: string| null = localStorage.getItem("user");
 const [searchUserForRoom, setsearchUserForRoom] = useState<string>('')
+const [selectedAvatar, setSelectedAvatar] = useState<string>('');
 
   useEffect(() => {
     if (socket) return;
@@ -96,6 +98,7 @@ if(valid){
  
   });
  localStorage.setItem("user", username);
+ localStorage.setItem("image", image);
   setAllRooms(rooms)
   setValidUsername(valid)
   socket.on(`${username}` , (data:Room[]) => {
@@ -125,9 +128,11 @@ setImage('')
 }
 
 const handelLocalStorageUser = () =>{
-if(showLocalStorageUser){
+if(showLocalStorageUser && localstorageImage){
 setUsername(showLocalStorageUser)
 setLocalStorageUser(showLocalStorageUser)
+setImage(localstorageImage)
+setSelectedAvatar(localstorageImage)
 }
 
 }
@@ -180,8 +185,32 @@ const handelAddUserSearchRoom = (user:string)  =>  {
 
 <div className="container-login"> 
   <>
-  {showLocalStorageUser && <button onClick={handelLocalStorageUser} >{showLocalStorageUser}</button> }
-  
+
+
+
+
+
+
+
+
+
+  <section  className="localstorageContainer"  >
+  <p>Logga in som</p>
+  {showLocalStorageUser && localstorageImage && <button onClick={handelLocalStorageUser} className="localstorageContainer___btn" > <h3>{showLocalStorageUser}  </h3>     <img alt='' className="localstorageContainer___img" src={localstorageImage} /> </button> }
+
+  </section>
+
+
+
+
+
+
+
+
+
+
+
+
 
   <div className="container-content">
       <h1> Välkommen till chattylachatt </h1>
@@ -192,16 +221,32 @@ const handelAddUserSearchRoom = (user:string)  =>  {
         gemenskapliga digitala rum och upplev en ny dimension 
         av interaktion. Let's chat with Chattylachatt.</p>
       </div>
+
+
+
 <div className="container-avatar">
-  <AvatarPicker onSelect={(avatar) => console.log(avatar)} setImage={setImage} />
+  <AvatarPicker onSelect={(avatar) => console.log(avatar)}          selectedAvatar={selectedAvatar} setSelectedAvatar={setSelectedAvatar}      setImage={setImage} />
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
       <section className="btnAndUsername"> 
   <label htmlFor='username' className='user-name-login'> Användarnamn: </label>
 <input 
 className="username-input" 
 id="username" type="text" 
 value={username} 
-maxLength={20}
+maxLength={10}
 
 onChange={(e:ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
 /> 
@@ -218,6 +263,41 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
   
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {validUsername && 
 <article className="chatContainer"> 
  
@@ -232,7 +312,7 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
  <img src={image} />
  <h2>{username}</h2>
  </section>
- <input className="findRoomInput" type="text" value={searchUserForRoom} maxLength={20}  onChange={(e:ChangeEvent<HTMLInputElement>) => setsearchUserForRoom(e.target.value)} />
+ <input className="findRoomInput" type="text" value={searchUserForRoom} maxLength={10}  onChange={(e:ChangeEvent<HTMLInputElement>) => setsearchUserForRoom(e.target.value)} />
  <button className="findRoomBtn" onClick={handleFindRoom}> <FaSearch /> </button>
    </section>
 <section className="allRoomsContainer"> 
@@ -251,7 +331,12 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
 <h2>{ selectedRoom?.roomName.replace(`${username}`,'')}</h2>
 <section className="allmessageContainer"> 
    
-<AllMessages selectedRoom={selectedRoom} handelAddUserSearchRoom={handelAddUserSearchRoom} username={username} currentUserUsername={username} localStorageUser={localStorageUser} />  
+<AllMessages 
+selectedRoom={selectedRoom} 
+handelAddUserSearchRoom={handelAddUserSearchRoom} 
+username={username} 
+currentUserUsername={username}
+localStorageUser={localStorageUser} />  
 
 </section>
 
