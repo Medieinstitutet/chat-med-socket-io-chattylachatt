@@ -80,6 +80,11 @@ flex-direction: column;
     display: flex;
     align-items: start;
     justify-content: center;
+    @include mixins.devices(tablet) {
+      width: 100%;
+
+
+    }
 
   }
 

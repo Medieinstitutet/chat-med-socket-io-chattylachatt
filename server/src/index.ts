@@ -91,17 +91,13 @@ io.on("connection", (socket) => {
 /* skapa ett rum om ett rum inte redan finns genom att kontrollera om username och searchUserForRoom inkluderas tillsammans vilket i rummets namn */
  
 socket?.on("create_room",(username, searchUserForRoom,  callback) => {
-     
-
-
-
 
   let roomExist =  roomList.find(item => item.roomName.includes(username) && item.roomName.includes(searchUserForRoom))
 
   const userExist = roomList.find(item => item.users.includes(searchUserForRoom))
 if(!roomExist && userExist){
 roomList.push({
-id: moment().format("YYYY-MM-DD HH-MM-ss"),
+id: moment().format("YYYY-MM-DD HH:mm:ss"),
 roomName: `${username} ${searchUserForRoom}`,
 users:[username, searchUserForRoom ],
 messages: []
@@ -146,12 +142,9 @@ otherRoom
    
   
       newMessage.messages.push(createNewMessage);
-      
-
-
-     
+    
       io.to(newMessage.roomName).emit(
-          "bid_accepted",
+          "room_conect",
           newMessage
       );
   } else {
@@ -214,6 +207,8 @@ socket.on("allroomsForUser",(localStorageUser, usernames, callback) => {
   if(roomUserList.length !== 0){
   
     callback(true, roomUserList); 
+
+
   }else{
   callback(false)
   }
@@ -237,6 +232,10 @@ socket.on("join_room", (roomName: string, username:string, callback) => {
 
   callback(roomList.find((rooms) => rooms.roomName === roomName))
 });
+
+
+
+
 });
 
 server.listen(PORT, () => {

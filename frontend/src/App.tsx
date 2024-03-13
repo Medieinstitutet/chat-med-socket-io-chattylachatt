@@ -30,9 +30,16 @@ const [selectedAvatar, setSelectedAvatar] = useState<string>('');
     if (socket) return;
 
     const s = io("http://localhost:3000");
-  s.on( "bid_accepted", (product: Room) => {
-      setSelectedRoom(product);
+  s.on( "room_conect", (rooms: Room) => {
+      setSelectedRoom(rooms);
     });
+
+
+
+
+
+
+
 
     s.on("mainRoom", (mainRoomData: Room[]) => {
       setSelectedRoom(mainRoomData[0]);
@@ -60,7 +67,7 @@ if(selectedRoom && newMessage !== ''){
       const createNewMessage:Message= {
         message: newMessage,
         room:selectedRoom.roomName,
-        cratedAt: moment().format('DD-MM-YYYY HH:mm:ss'),
+        cratedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
         user:{ username,
           image}
           
@@ -78,11 +85,14 @@ if(selectedRoom && newMessage !== ''){
   const handleClick = (roomName: string) => {
     socket?.emit("join_room", roomName, username, (data: Room) => {
       setSelectedRoom(data);
-   
+       
     });
 
   };
 
+
+
+  
 
  
 const checkIfUsernameValid =  () =>{
@@ -336,7 +346,10 @@ selectedRoom={selectedRoom}
 handelAddUserSearchRoom={handelAddUserSearchRoom} 
 username={username} 
 currentUserUsername={username}
-localStorageUser={localStorageUser} />  
+localStorageUser={localStorageUser}
+
+image={image}
+/>  
 
 </section>
 

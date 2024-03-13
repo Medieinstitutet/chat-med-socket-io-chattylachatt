@@ -26,10 +26,11 @@ justify-content:center;
 
 @include mixins.devices(tablet) {
     height: 80%;
-    width: 100%;
+    width: 90%;
+    padding: 0 5%;
     display: flex;
     align-items: center;
-    justify-content:center;
+    justify-content:start;
 
   }
 
