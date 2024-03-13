@@ -1,35 +1,63 @@
-
+import { useState } from 'react';
 import { Room } from '../models/Room'
-
+import '../sass/_editAllMessages.scss';
 
 
 interface Props {
-    selectedRoom?: Room
-  handelAddUserSearchRoom: (item:string) => void
-  username:string
-  localStorageUser:string
+  selectedRoom: Room;
+  handleAddUserSearchRoom: (item:string) => void;
+  currentUserUsername: string;
 
 }
 
 
-export const AllMessages = ({selectedRoom, handelAddUserSearchRoom, username, localStorageUser}:Props) => {
+export const AllMessages = ({ selectedRoom, handleAddUserSearchRoom, currentUserUsername }: Props) => {
+  const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+  const [editedMessage, setEditedMessage] = useState('');
+
+
+  const startEditing = (message: string, id: string) => {
+    setEditingMessageId(id);
+    setEditedMessage(message);
+  };
+
   
+  const cancelEditing = () => {
+    setEditingMessageId(null);
+    setEditedMessage('');
+  };
+
+ 
+  const saveEditedMessage = (id: string) => {
+    console.log(`Saving edited message for message ID ${id}: ${editedMessage}`);
+    setEditingMessageId(null); 
+  };
+
   return (
-    <section>
-     {selectedRoom?.messages.map((item) => (
-        <div key={item.cratedAt + item.user.username } className={username === item.user.username  || localStorageUser === item.user.username ? 'user' : 'notUser'} >
-          <p> {item.cratedAt} </p> 
-        <p> {item.message} </p> 
-        {username === item.user.username  || localStorageUser === item.user.username ? <button> Redigera </button>: ''}
-        <section onClick={() => handelAddUserSearchRoom(item.user.username)}>
-        <img src={item.user.image} alt="" />
-        <p> {item.user.username} </p>
-      
-        </section>
+    <section className="messages-container">
+      {selectedRoom?.messages.map((item, index) => (
+        <div key={item.cratedAt + item.user.username + index}> 
+          <p className='message-time'>{item.cratedAt}</p>
+          {editingMessageId === item.cratedAt + item.user.username ? (
+            <div className='message-editing'>
+              <textarea className='editing-textarea' value={editedMessage} onChange={(e) => setEditedMessage(e.target.value)} />
+              <button className='save-edit-btn' onClick={() => saveEditedMessage(item.cratedAt + item.user.username)}>Spara</button>
+              <button className='cancel-edit-btn' onClick={cancelEditing}>Avbryt</button>
+            </div>
+          ) : (
+            <p>{item.message}</p>
+          )}
+
+          <section onClick={() => handleAddUserSearchRoom(item.user.username)}>
+            <img src={item.user.image} alt={item.user.username} />
+            <p>{item.user.username}</p>
+          </section>
+
+          {item.user.username === currentUserUsername && (
+            <button className='edit-message-btn' onClick={() => startEditing(item.message, item.cratedAt + item.user.username)}>Redigera</button>
+          )}
         </div>
       ))}
-    
     </section>
-  )
-}
-
+  );
+};
