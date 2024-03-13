@@ -56,7 +56,7 @@ const [selectedAvatar, setSelectedAvatar] = useState<string>('');
 
   const PostMessage = () => {
 
-if(selectedRoom){
+if(selectedRoom && newMessage !== ''){
       const createNewMessage:Message= {
         message: newMessage,
         room:selectedRoom.roomName,
