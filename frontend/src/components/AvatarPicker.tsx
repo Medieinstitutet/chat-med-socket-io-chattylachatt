@@ -9,11 +9,13 @@ import avatar5 from '../assets/avatar5.webp';
 interface AvatarPickerProps {
   onSelect: (avatar: string) => void;
   setImage: (image:string) =>void
+  selectedAvatar:string 
+  setSelectedAvatar:(selectedAvatar:string) => void
 }
 
-const AvatarPicker = ({ onSelect, setImage }:AvatarPickerProps) => {
+const AvatarPicker = ({ onSelect, setImage, selectedAvatar, setSelectedAvatar }:AvatarPickerProps) => {
   const avatars: string[] = [avatar1, avatar2, avatar3, avatar4, avatar5,]; 
-  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
+
 
   const handleAvatarSelect = (avatar: string) => {
     setSelectedAvatar(avatar);
@@ -32,6 +34,7 @@ const AvatarPicker = ({ onSelect, setImage }:AvatarPickerProps) => {
             alt={`Avatar ${avatar}`}
             onClick={() => handleAvatarSelect(avatar)}
             className={selectedAvatar === avatar ? 'avatar' : ''}
+            
           />
         ))}
       </div>
