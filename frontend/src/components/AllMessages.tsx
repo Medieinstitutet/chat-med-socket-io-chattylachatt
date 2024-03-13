@@ -1,4 +1,5 @@
 
+import { useEffect } from 'react'
 import { Room } from '../models/Room'
 
 
@@ -13,13 +14,36 @@ interface Props {
 
 
 export const AllMessages = ({selectedRoom, handelAddUserSearchRoom, username, localStorageUser}:Props) => {
+
+  const scrollToBottom = () => {
+    const element = document.querySelector<HTMLDivElement>('.allmessageContainer');
+    if (element) {
+      element.scrollTop = element.scrollHeight;
+    }
+  };
+ 
+  useEffect(() => {
+    scrollToBottom()
+  }, [selectedRoom])
+  
+
+
+
+
+
+
+
+
+
   
   return (
     <section>
      {selectedRoom?.messages.map((item) => (
         <div key={item.cratedAt + item.user.username } className={username === item.user.username  || localStorageUser === item.user.username ? 'user' : 'notUser'} >
           <p> {item.cratedAt} </p> 
+          <section className='message'>  
         <p> {item.message} </p> 
+        </section>
         {username === item.user.username  || localStorageUser === item.user.username ? <button> Redigera </button>: ''}
         <section onClick={() => handelAddUserSearchRoom(item.user.username)}>
         <img src={item.user.image} alt="" />

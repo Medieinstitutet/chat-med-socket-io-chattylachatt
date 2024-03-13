@@ -18,15 +18,23 @@ padding: 0 6%;
 
   
     align-items: end;
-
-
-    
+    .message{
+text-align: right;
+  
+      word-break: break-all;
+   
+      }
     } 
 .notUser{
 
     align-items: start;
 
 
+}
+
+.message{
+width: 100%;
+word-break: break-all;
 }
 
 

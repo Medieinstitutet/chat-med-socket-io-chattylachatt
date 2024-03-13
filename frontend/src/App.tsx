@@ -47,15 +47,14 @@ const [selectedAvatar, setSelectedAvatar] = useState<string>('');
     s.on(`${localStorageUser}` , (product) => {
       console.log(product)
     });
+   
 
     setSocket(s);
   }, [setSocket, socket, selectedRoom,localStorageUser]);
 
 
 
-
   const PostMessage = () => {
-
 if(selectedRoom){
       const createNewMessage:Message= {
         message: newMessage,
@@ -69,19 +68,36 @@ if(selectedRoom){
     
     socket?.emit("send_message", createNewMessage)
    setNewMessage('')
+
    
     }
      
 
      }
 
+
+
+
+
   const handleClick = (roomName: string) => {
-    socket?.emit("join_room", roomName, username, (data: Room) => {
-      setSelectedRoom(data);
    
+
+    socket?.emit("join_room", roomName, username, (data: Room) => {
+    
+   
+      
+if(data){
+
+setSelectedRoom(data);
+
+
+}
+
     });
 
+
   };
+
 
 
  
