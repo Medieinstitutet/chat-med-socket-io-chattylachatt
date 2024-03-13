@@ -62,7 +62,7 @@ body::-webkit-scrollbar {
   display: flex;
   box-shadow: 0px 0px 10px 0px #000000;
 flex-direction: column;
-justify-content: space-between;
+
   @include mixins.devices(tablet) {
  flex-direction: row;
  height: 70vh;
@@ -78,20 +78,14 @@ justify-content: space-between;
     margin: 0;
     height: 10%;
     display: flex;
-    align-items: center;
+    align-items: start;
     justify-content: center;
-
-    @include mixins.devices(tablet) {
-  height: 10%;
-  
-
-    }
 
   }
 
   .sectionOne {
 height: 20%;
-padding: 2.5% 0;
+
 width: 100%;
 display: flex;
 flex-direction: column;

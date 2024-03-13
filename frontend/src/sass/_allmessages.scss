@@ -1,11 +1,15 @@
+@use 'mixins';
 .allmessageContainer{
   width: 100%;
-  height: 80%;
+  height: 95%;
   min-height: fit-content;
   background-color: #2D2E57;
   overflow-y: scroll;
   
-  
+  @include mixins.devices(tablet) {
+
+    height: 80%;
+  }
   .user, .notUser{
   display: flex;
   flex-direction: column;
