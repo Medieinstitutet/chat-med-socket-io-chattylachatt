@@ -51,6 +51,13 @@ body::-webkit-scrollbar {
 }
 
 
+img{
+
+    border-radius: 50%;
+    border: 1px solid rgba(153, 148, 161, 0.196);
+    object-fit: contain;
+    }
+
 .chatContainer {
   border-radius: 5px;
   overflow: hidden;
@@ -72,14 +79,24 @@ flex-direction: column;
 
 
 
-
   h2 {
-    padding: 0;
+    padding: 1% 0;
     margin: 0;
-    height: 10%;
+    height: 8%;
     display: flex;
     align-items: start;
     justify-content: center;
+
+
+color:#d0c5f2 ;
+
+
+
+
+
+
+
+   
     @include mixins.devices(tablet) {
       width: 100%;
 
@@ -184,11 +201,18 @@ height: 70%;
       margin: 0;
     }
 
+
+    &:hover{
+
+      background-color: #57576a40;
+
+    }
+
   }
 
 
   &___img {
-
+    border: none;
     height: 30px;
     width: 30px;
     border-radius: 50%;

@@ -5,6 +5,12 @@
   min-height: fit-content;
   background-color: #2D2E57;
   overflow-y: scroll;
+
+
+
+
+
+  
   
   @include mixins.devices(tablet) {
 
@@ -23,7 +29,10 @@ height: fit-content;
   .profilContainer{
      
     margin-top: 40px;
-     
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: end;
      
       }
 
@@ -119,6 +128,7 @@ justify-content: space-between;
   width: 50px;
     height: 50px;
     border-radius: 50%;
+
     }
 
 
@@ -185,24 +195,22 @@ align-items: end;
     border-radius: 5px;
     border: none;
     margin: 0;
-
+font-size: 10px;
 
   }
   
-  .save-edit-btn {
-    background-color: #e136f4;
+  .save-edit-btn,  .cancel-edit-btn {
+    background-color:  #9966ff9b;
     color: white;
-    margin-right: 1rem;
+    margin-left: 1rem;
+    &:hover{  background-color:  #6f49ba9b;;}
   }
   
-  .cancel-edit-btn, .edit-message-btn {
-    background-color: #e136f4;
-    color: white;
 
-  }
   .edit-message-btn {
-    background-color: #9c8f8e;
+    background-color:  #9966ff9b;
     color: white;
+    &:hover{  background-color: #6f49ba9b;;}
 
   }
   
@@ -217,8 +225,8 @@ align-items: end;
   max-width: 100%;
   position: relative;
   clear: both;
-  
-  background: #95c2fd;
+  font-weight: 600;
+  background: #9966ff;
   background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.15, #bee2ff), color-stop(1, #95c2fd));
   background-image: -webkit-linear-gradient(bottom, #bee2ff 15%, #95c2fd 100%);
   background-image: -moz-linear-gradient(bottom, #bee2ff 15%, #95c2fd 100%);
@@ -279,13 +287,30 @@ align-items: end;
 .pink {
 
   background: #7acd47;
-  background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0.15, #ffbee3),color-stop(1, #f8a5ce));
-  background-image: -webkit-linear-gradient(bottom, #ffbee3 15%, #f8a5ce 100%);
-  background-image: -moz-linear-gradient(bottom, #ffbee3 15%, #f8a5ce 100%);
-  background-image: -ms-linear-gradient(bottom, #ffbee3 15%, #f8a5ce 100%);
-  background-image: -o-linear-gradient(bottom, #ffbee3 15%, #f8a5ce 100%);
-  background-image: linear-gradient(bottom, #ffbee3 15%, #f8a5ce 100%);
+  background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0.15, #f786bf),color-stop(1, #f8a5ce));
+  background-image: -webkit-linear-gradient(bottom, #f786bf 15%, #f8a5ce 100%);
+  background-image: -moz-linear-gradient(bottom, #f786bf 15%, #f8a5ce 100%);
+  background-image: -ms-linear-gradient(bottom, #f786bf 15%, #f8a5ce 100%);
+  background-image: -o-linear-gradient(bottom, #f786bf 15%, #f8a5ce 100%);
+  background-image: linear-gradient(bottom, #f786bf 15%, #f8a5ce 100%);
 }
 .pink:after {
-  border-bottom-color: #ffbee3;
+  border-bottom-color: #f786bf;
 }
+
+
+.rainbow{
+  background: -moz-linear-gradient(326deg, #f786bf 0%, #e066ff 22%, #cc66ff 41%, #b366ff 65%, #9966ff 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, 326deg, color-stop(0%, #f786bf), color-stop(22%, #e066ff), color-stop(41%, #cc66ff), color-stop(65%, #b366ff), color-stop(100%, #9966ff)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(326deg, #f786bf 0%, #e066ff 22%, #cc66ff 41%, #b366ff 65%, #9966ff 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(326deg, #f786bf 0%, #e066ff 22%, #cc66ff 41%, #b366ff 65%, #9966ff 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(326deg, #f786bf 0%, #e066ff 22%, #cc66ff 41%, #b366ff 65%, #9966ff 100%); /* IE10+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f786bf', endColorstr='#9966ff', GradientType='1'); /* for IE */
+  background: linear-gradient(124deg, #f786bf 0%, #e066ff 22%, #cc66ff 41%, #b366ff 65%, #9966ff 100%); /* W3C */
+  
+ }
+ 
+ .rainbow:after{
+     border-bottom-color: #9966ff;
+   
+ }

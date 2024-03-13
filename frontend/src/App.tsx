@@ -125,16 +125,22 @@ setAllRooms(data)
   else if(!valid){
 seterrorMessage('Användare finns redan')
 setValidUsername(valid)
-setUsername('')
 setImage('')
 }
 }) 
 } else{
   seterrorMessage('Välj ett användarnamn')
+ 
   }}
   else{
     seterrorMessage('Väljen Avatar')
     }
+
+
+    setTimeout(() => {
+      seterrorMessage('')
+    }, 3000);
+
 }
 
 const handelLocalStorageUser = () =>{
@@ -338,7 +344,7 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
 
 <section className="sectionTwo">         
 
-<h2>{ selectedRoom?.roomName.replace(`${username}`,'')}</h2>
+<h2>{ selectedRoom?.roomName.replace(`${username}`,'').toLocaleUpperCase()}</h2>
 <section className="allmessageContainer"> 
    
 <AllMessages 
