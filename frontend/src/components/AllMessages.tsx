@@ -1,62 +1,104 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Room } from '../models/Room'
-import '../sass/_editAllMessages.scss';
+
 
 
 interface Props {
   selectedRoom: Room;
-  handleAddUserSearchRoom: (item:string) => void;
+  handelAddUserSearchRoom: (item:string) => void;
   currentUserUsername: string;
+  username:string
+  localStorageUser:string
 }
 
 
-export const AllMessages = ({ selectedRoom, handleAddUserSearchRoom, currentUserUsername }: Props) => {
+export const AllMessages = ({ selectedRoom, handelAddUserSearchRoom, currentUserUsername, username, localStorageUser }: Props) => {
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
   const [editedMessage, setEditedMessage] = useState('');
+let edit = false
 
+  
+  const scrollToBottom = () => {
+    const element = document.querySelector<HTMLDivElement>('.allmessageContainer');
+    if (element) {
+      element.scrollTop = element.scrollHeight;
+    }
+  };
+ 
+  useEffect(() => {
+    scrollToBottom()
+  }, [selectedRoom])
+  
+  
 
   const startEditing = (message: string, id: string) => {
     setEditingMessageId(id);
     setEditedMessage(message);
+    edit=true
   };
 
   
   const cancelEditing = () => {
     setEditingMessageId(null);
     setEditedMessage('');
+    edit=false
   };
 
  
   const saveEditedMessage = (id: string) => {
-    console.log(`Saving edited message for message ID ${id}: ${editedMessage}`);
+    console.log(`Saving edited message for message ID ${id}:${editedMessage}`);
     setEditingMessageId(null); 
+    edit=false
   };
 
   return (
-    <section className="messages-container">
-      {selectedRoom?.messages.map((item, index) => (
-        <div key={item.cratedAt + item.user.username + index}> 
-          <p className='message-time'>{item.cratedAt}</p>
+    <section>
+     {selectedRoom?.messages.map((item) => (
+        <div key={item.cratedAt + item.user.username } className={username === item.user.username  || localStorageUser === item.user.username ? 'user' : 'notUser'} >
+          <p> {item.cratedAt} </p> 
+        
           {editingMessageId === item.cratedAt + item.user.username ? (
-            <div className='message-editing'>
-              <textarea className='editing-textarea' value={editedMessage} onChange={(e) => setEditedMessage(e.target.value)} />
+
+<section className='message'><textarea id="myTextarea"  maxLength={50} minLength={3}  value={editedMessage} onChange={(e) => setEditedMessage(e.target.value)} > </textarea>
+<section className='buttons'>     
               <button className='save-edit-btn' onClick={() => saveEditedMessage(item.cratedAt + item.user.username)}>Spara</button>
               <button className='cancel-edit-btn' onClick={cancelEditing}>Avbryt</button>
-            </div>
+              </section>
+
+
+
+
+
+
+
+
+              
+           </section>
+              
+              
+
+
+
+
           ) : (
-            <p>{item.message}</p>
+            <section className='message'> 
+            <p >{item.message}</p>
+            <section className='buttons'> 
+            {username === item.user.username  && <button className='edit-message-btn' onClick={() => startEditing(item.message, item.cratedAt + item.user.username)}>Redigera</button>  }
+            
+            </section>
+            </section>
           )}
-
-          <section onClick={() => handleAddUserSearchRoom(item.user.username)}>
-            <img src={item.user.image} alt={item.user.username} />
-            <p>{item.user.username}</p>
-          </section>  
-
-          {item.user.username === currentUserUsername && (
-            <button className='edit-message-btn' onClick={() => startEditing(item.message, item.cratedAt + item.user.username)}>Redigera</button>
-          )}
+  
+        
+        <section onClick={() => handelAddUserSearchRoom(item.user.username)}>
+        <img src={item.user.image} alt="" />
+        <p> {item.user.username} </p>
+      
+        </section>
         </div>
       ))}
+    
     </section>
   );
 };
