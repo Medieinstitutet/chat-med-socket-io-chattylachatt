@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Room } from '../models/Room'
-//import '../sass/_editAllMessages.scss';
+import '../sass/_editAllMessages.scss';
 
 
 interface Props {
