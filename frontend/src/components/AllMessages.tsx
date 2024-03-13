@@ -7,7 +7,6 @@ interface Props {
   selectedRoom: Room;
   handleAddUserSearchRoom: (item:string) => void;
   currentUserUsername: string;
-
 }
 
 
@@ -51,7 +50,7 @@ export const AllMessages = ({ selectedRoom, handleAddUserSearchRoom, currentUser
           <section onClick={() => handleAddUserSearchRoom(item.user.username)}>
             <img src={item.user.image} alt={item.user.username} />
             <p>{item.user.username}</p>
-          </section>
+          </section>  
 
           {item.user.username === currentUserUsername && (
             <button className='edit-message-btn' onClick={() => startEditing(item.message, item.cratedAt + item.user.username)}>Redigera</button>
