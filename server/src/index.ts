@@ -7,6 +7,8 @@ import moment from "moment-timezone"
 import { Room } from "./models/Room";
 // import { data } from "jquery";
 import { Message } from "./models/Message";
+
+
 moment.tz.setDefault('Europe/Stockholm');
   moment.locale('sv');
 
@@ -76,18 +78,38 @@ const io = new Server(server, { cors: { origin: "*" } });
 io.on("connection", (socket) => {  
 
 /* När användaren valt använtaren och kommer in på sidan så ges alla meddelanden som finns i main-room */
-  socket.emit(
+  
+
+socket.emit(
     "mainRoom",
     roomList.map((item) => {
         if (item.roomName === 'main'){
            return {id: item.id, roomName: item.roomName, messages:item.messages}
         }   
-     
-    
-      
 
+       
     }));
 
+    
+    socket.on("update-message", async (data: { cratedAt: string; newMessage: string; username: string }) => {
+      console.log("Update received on server:", data);
+      
+      const room = roomList.find(r => r.messages.some(m => m.cratedAt === data.cratedAt));
+      if (room) {
+          const message = room.messages.find(m => m.cratedAt === data.cratedAt && m.user.username === data.username);
+          if (message) {
+              message.message = data.newMessage;
+              io.to(room.roomName).emit('message-updated', data); 
+              
+          } else {
+              socket.emit('update-failed', { id: data.cratedAt, message: 'Unauthorized to update the message or message not found.' });
+          }
+      } else {
+          socket.emit('update-failed', { id: data.cratedAt, message: 'Room not found.' });
+      }
+  });
+
+  
 /* skapa ett rum om ett rum inte redan finns genom att kontrollera om username och searchUserForRoom inkluderas tillsammans vilket i rummets namn */
  
 socket?.on("create_room",(username, searchUserForRoom,  callback) => {
@@ -238,6 +260,23 @@ socket.on("join_room", (roomName: string, username:string, callback) => {
 
 });
 
+
+
+function findRoomByMessageId(messageId: string): string | null {
+  console.log(`Searching for message ID: ${messageId} in all rooms`);
+  for (const room of roomList) {
+      const messageExists = room.messages.some(message => message.cratedAt === messageId);
+      if (messageExists) {
+          return room.roomName;
+      }
+  }
+  console.log(`No room found for message ID: ${messageId}`);
+  return null;
+}
+
+
 server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+

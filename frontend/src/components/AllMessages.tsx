@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Room } from '../models/Room'
-import moment from 'moment-timezone';
-import 'moment/dist/locale/sv';
+import { Room, } from '../models/Room'
+import '../sass/_editAllMessages.scss';
+import io from 'socket.io-client';
+import { Message } from '../models/Message'; 
 
 
+const socket = io('http://localhost:3000');
 
 interface Props {
   selectedRoom: Room;
@@ -32,10 +34,33 @@ export const AllMessages = ({ selectedRoom, handelAddUserSearchRoom, currentUser
     scrollToBottom()
   }, [selectedRoom])
   
-  
+    const [messages, setMessages] = useState<Message[]>(selectedRoom.messages);
 
-  const startEditing = (message: string, id: string) => {
-    setEditingMessageId(id);
+  useEffect(() => {
+    setMessages(selectedRoom.messages);
+  }, [selectedRoom]);
+
+  useEffect(() => {
+    const handleUpdate = (data: { cratedAt: string; newMessage: string; username: string }) => {
+      if (editingMessageId === data.cratedAt) {
+        setMessages((prevMessages) => 
+          prevMessages.map((msg) => 
+            msg.cratedAt === data.cratedAt ? { ...msg, message: data.newMessage } : msg
+          )
+        );
+        setEditingMessageId(null);
+        setEditedMessage('');
+      }
+    };
+
+    socket.on('message-updated', handleUpdate);
+    return () => {
+      socket.off('message-updated', handleUpdate);
+    };
+  }, [editingMessageId]);
+
+  const startEditing = (message: string, cratedAt: string) => {
+    setEditingMessageId(cratedAt);
     setEditedMessage(message);
  
   };
@@ -48,10 +73,16 @@ export const AllMessages = ({ selectedRoom, handelAddUserSearchRoom, currentUser
   };
 
  
-  const saveEditedMessage = (id: string) => {
-    console.log(`Saving edited message for message ID ${id}:${editedMessage}`);
+  const saveEditedMessage = (cratedAt: string ) => {
+    const updatedMessage = {
+      cratedAt: cratedAt,
+      newMessage: editedMessage,
+      username: currentUserUsername,
+    };
+    console.log("Sending update:", updatedMessage);
+    socket.emit('update-message', updatedMessage);
     setEditingMessageId(null); 
-  
+    
   };
 
 
