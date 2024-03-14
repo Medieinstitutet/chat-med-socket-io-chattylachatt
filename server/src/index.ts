@@ -91,25 +91,67 @@ socket.emit(
     }));
 
     
-    socket.on("update-message", async (data: { cratedAt: string; newMessage: string; username: string }) => {
-      console.log("Update received on server:", data);
-      
-      const room = roomList.find(r => r.messages.some(m => m.cratedAt === data.cratedAt));
-      if (room) {
-          const message = room.messages.find(m => m.cratedAt === data.cratedAt && m.user.username === data.username);
-          if (message) {
-              message.message = data.newMessage;
-              io.to(room.roomName).emit('message-updated', data); 
-              
-          } else {
-              socket.emit('update-failed', { id: data.cratedAt, message: 'Unauthorized to update the message or message not found.' });
-          }
-      } else {
-          socket.emit('update-failed', { id: data.cratedAt, message: 'Room not found.' });
-      }
-  });
-
+    socket.on("update-message",  (newUppdateMessage:Message, selectedRoom, callback) => { 
   
+
+      let updateMessage = roomList.find((rooms) => rooms.roomName === selectedRoom.roomName);
+      
+    if (updateMessage) {
+let hello = updateMessage.messages.map(message =>{
+if(message.cratedAt === newUppdateMessage.cratedAt && message.user.username === newUppdateMessage.user.username){
+
+
+return {...message, message: newUppdateMessage.message}
+
+}else{
+
+return message
+
+}
+
+
+
+
+ })
+
+ let updatedRoom = {...updateMessage, messages:hello}
+
+if(updatedRoom){
+
+let updatedList = roomList.map(item => {
+
+
+ if(item.roomName === updatedRoom.roomName){
+  return updatedRoom
+
+
+ }
+ else{
+
+return item
+
+ }})
+
+roomList = updatedList
+
+
+
+}
+
+callback(updatedRoom)
+    io.to(selectedRoom.roomName).emit(
+          "room_conect",
+          updatedRoom
+      ); 
+  } else {
+      console.log("no room found");
+  }
+
+   
+ 
+    })
+
+
 /* skapa ett rum om ett rum inte redan finns genom att kontrollera om username och searchUserForRoom inkluderas tillsammans vilket i rummets namn */
  
 socket?.on("create_room",(username, searchUserForRoom,  callback) => {

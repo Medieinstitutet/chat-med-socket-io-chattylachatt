@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Room, } from '../models/Room'
-import '../sass/_editAllMessages.scss';
 import io from 'socket.io-client';
 import { Message } from '../models/Message'; 
 
@@ -14,10 +13,12 @@ interface Props {
   username:string
   localStorageUser:string
   image:string
+  setNewUppdateMessage:(newUppdateMessage:Message)=> void
+  UpdateMessage:() => void
 }
 
 
-export const AllMessages = ({ selectedRoom, handelAddUserSearchRoom, currentUserUsername, username, localStorageUser, image }: Props) => {
+export const AllMessages = ({UpdateMessage, setNewUppdateMessage, selectedRoom, handelAddUserSearchRoom, currentUserUsername, username, localStorageUser, image }: Props) => {
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
   const [editedMessage, setEditedMessage] = useState('');
  
@@ -40,24 +41,7 @@ export const AllMessages = ({ selectedRoom, handelAddUserSearchRoom, currentUser
     setMessages(selectedRoom.messages);
   }, [selectedRoom]);
 
-  useEffect(() => {
-    const handleUpdate = (data: { cratedAt: string; newMessage: string; username: string }) => {
-      if (editingMessageId === data.cratedAt) {
-        setMessages((prevMessages) => 
-          prevMessages.map((msg) => 
-            msg.cratedAt === data.cratedAt ? { ...msg, message: data.newMessage } : msg
-          )
-        );
-        setEditingMessageId(null);
-        setEditedMessage('');
-      }
-    };
 
-    socket.on('message-updated', handleUpdate);
-    return () => {
-      socket.off('message-updated', handleUpdate);
-    };
-  }, [editingMessageId]);
 
   const startEditing = (message: string, cratedAt: string) => {
     setEditingMessageId(cratedAt);
@@ -73,15 +57,19 @@ export const AllMessages = ({ selectedRoom, handelAddUserSearchRoom, currentUser
   };
 
  
-  const saveEditedMessage = (cratedAt: string ) => {
-    const updatedMessage = {
-      cratedAt: cratedAt,
-      newMessage: editedMessage,
-      username: currentUserUsername,
+  const saveEditedMessage = (cratedAt:string) => {
+    const updatedMessage:Message = {
+      cratedAt,
+      message: editedMessage,
+      user: {username:currentUserUsername, image},
+      room: selectedRoom.roomName 
+     
     };
-    console.log("Sending update:", updatedMessage);
-    socket.emit('update-message', updatedMessage);
-    setEditingMessageId(null); 
+
+    setNewUppdateMessage(updatedMessage)
+    UpdateMessage(updatedMessage)
+    setEditingMessageId(null);
+    setEditedMessage('');
     
   };
 
@@ -100,12 +88,6 @@ export const AllMessages = ({ selectedRoom, handelAddUserSearchRoom, currentUser
           <div className='time'>   <p className='time'>{moment(item.cratedAt, "YYYY-MM-DD HH:mm:ss").fromNow()}</p>    </div>
        
 
-
-
-
-
-
-
           {editingMessageId === item.cratedAt + item.user.username ? (
 
 <section className='message'>
@@ -113,7 +95,7 @@ export const AllMessages = ({ selectedRoom, handelAddUserSearchRoom, currentUser
   <textarea id="myTextarea"   maxLength={50} minLength={3}  value={editedMessage} onChange={(e) => setEditedMessage(e.target.value)} > </textarea>
   </div>
 <section className='buttons'>     
-              <button className='save-edit-btn' onClick={() => saveEditedMessage(item.cratedAt + item.user.username)}>Spara</button>
+              <button className='save-edit-btn' onClick={() => saveEditedMessage(item.cratedAt)}>Spara</button>
               <button className='cancel-edit-btn' onClick={cancelEditing}>Avbryt</button>
               </section>
 

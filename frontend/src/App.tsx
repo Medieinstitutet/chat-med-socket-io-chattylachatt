@@ -25,7 +25,7 @@ const localstorageImage: string| null = localStorage.getItem("image")
 const showLocalStorageUser: string| null = localStorage.getItem("user");
 const [searchUserForRoom, setsearchUserForRoom] = useState<string>('')
 const [selectedAvatar, setSelectedAvatar] = useState<string>('');
-
+const [newUppdateMessage, setNewUppdateMessage] = useState<Message>()
   useEffect(() => {
     if (socket) return;
 
@@ -36,11 +36,6 @@ const [selectedAvatar, setSelectedAvatar] = useState<string>('');
 
 
 
-
-
-
-
-
     s.on("mainRoom", (mainRoomData: Room[]) => {
       setSelectedRoom(mainRoomData[0]);
 
@@ -48,12 +43,6 @@ const [selectedAvatar, setSelectedAvatar] = useState<string>('');
     });
 
 
-    s.on(`${username}` , (product) => {
-      console.log(product)
-    });
-    s.on(`${localStorageUser}` , (product) => {
-      console.log(product)
-    });
 
     setSocket(s);
   }, [setSocket, socket, selectedRoom,localStorageUser]);
@@ -89,6 +78,28 @@ if(selectedRoom && newMessage !== ''){
     });
 
   };
+
+
+
+
+
+
+
+const UpdateMessage= (newUppdateMessage:Message) =>{
+console.log({...newUppdateMessage})
+
+
+   socket?.emit('update-message', {...newUppdateMessage}, selectedRoom, (data:Room)=>{
+
+setSelectedRoom(data)
+
+   }); 
+
+
+}
+
+
+
 
 
 
@@ -172,8 +183,6 @@ const handleFindRoom = ()=> {
 
      }
     
-   
-   
     })
    
     
@@ -211,8 +220,8 @@ const handelAddUserSearchRoom = (user:string)  =>  {
 
 
   <section  className="localstorageContainer"  >
-  <p>Logga in som</p>
-  {showLocalStorageUser && localstorageImage && <button onClick={handelLocalStorageUser} className="localstorageContainer___btn" > <h3>{showLocalStorageUser}  </h3>     <img alt='' className="localstorageContainer___img" src={localstorageImage} /> </button> }
+
+  {showLocalStorageUser && localstorageImage &&   <>  <p>Logga in som</p> <button onClick={handelLocalStorageUser} className="localstorageContainer___btn" > <h3>{showLocalStorageUser}  </h3>     <img alt='' className="localstorageContainer___img" src={localstorageImage} /> </button>  </> }
 
   </section>
 
@@ -353,8 +362,9 @@ handelAddUserSearchRoom={handelAddUserSearchRoom}
 username={username} 
 currentUserUsername={username}
 localStorageUser={localStorageUser}
-
+setNewUppdateMessage={setNewUppdateMessage}
 image={image}
+UpdateMessage={UpdateMessage}
 />  
 
 </section>
