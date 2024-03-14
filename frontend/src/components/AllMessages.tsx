@@ -1,7 +1,11 @@
-import { useState } from 'react';
-import { Room } from '../models/Room'
+import { useState, useEffect } from 'react';
+import { Room, } from '../models/Room'
 import '../sass/_editAllMessages.scss';
+import io from 'socket.io-client';
+import { Message } from '../models/Message'; 
 
+
+const socket = io('http://localhost:3000');
 
 interface Props {
   selectedRoom: Room;
@@ -13,10 +17,33 @@ interface Props {
 export const AllMessages = ({ selectedRoom, handleAddUserSearchRoom, currentUserUsername }: Props) => {
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
   const [editedMessage, setEditedMessage] = useState('');
+  const [messages, setMessages] = useState<Message[]>(selectedRoom.messages);
 
+  useEffect(() => {
+    setMessages(selectedRoom.messages);
+  }, [selectedRoom]);
 
-  const startEditing = (message: string, id: string) => {
-    setEditingMessageId(id);
+  useEffect(() => {
+    const handleUpdate = (data: { cratedAt: string; newMessage: string; username: string }) => {
+      if (editingMessageId === data.cratedAt) {
+        setMessages((prevMessages) => 
+          prevMessages.map((msg) => 
+            msg.cratedAt === data.cratedAt ? { ...msg, message: data.newMessage } : msg
+          )
+        );
+        setEditingMessageId(null);
+        setEditedMessage('');
+      }
+    };
+
+    socket.on('message-updated', handleUpdate);
+    return () => {
+      socket.off('message-updated', handleUpdate);
+    };
+  }, [editingMessageId]);
+
+  const startEditing = (message: string, cratedAt: string) => {
+    setEditingMessageId(cratedAt);
     setEditedMessage(message);
   };
 
@@ -27,14 +54,21 @@ export const AllMessages = ({ selectedRoom, handleAddUserSearchRoom, currentUser
   };
 
  
-  const saveEditedMessage = (id: string) => {
-    console.log(`Saving edited message for message ID ${id}: ${editedMessage}`);
+  const saveEditedMessage = (cratedAt: string ) => {
+    const updatedMessage = {
+      cratedAt: cratedAt,
+      newMessage: editedMessage,
+      username: currentUserUsername,
+    };
+    console.log("Sending update:", updatedMessage);
+    socket.emit('update-message', updatedMessage);
     setEditingMessageId(null); 
+    
   };
 
   return (
     <section className="messages-container">
-      {selectedRoom?.messages.map((item, index) => (
+      {messages.map((item, index) => (
         <div key={item.cratedAt + item.user.username + index}> 
           <p className='message-time'>{item.cratedAt}</p>
           {editingMessageId === item.cratedAt + item.user.username ? (
