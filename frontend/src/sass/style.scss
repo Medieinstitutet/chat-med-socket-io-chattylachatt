@@ -107,7 +107,7 @@ color:#d0c5f2 ;
 
   .sectionOne {
 height: 20%;
-
+position: relative;
 width: 100%;
 display: flex;
 flex-direction: column;
@@ -120,6 +120,35 @@ background-color: #a5a5bc34;
   height: 100%;
 
     }
+
+
+    .logout{
+z-index: 10;
+      position: absolute;
+      top: 6%;
+      right: 5%;
+      padding: 5px ;
+      border: none;
+      border-radius: 3px;
+      background-color:  #ded2f2d6 ;
+      color: #2D2E57;
+      font-size: 0.5rem;
+      cursor: pointer;
+      outline: none;
+      text-transform: uppercase;
+      @include mixins.devices(tablet) {
+        top: 4%;
+        right: 11%;
+  
+      }
+      
+      &:hover{
+      
+        background-color:  #9c8cb489 ;
+      
+      }
+          }
+
 
 
 
@@ -171,6 +200,7 @@ height: 70%;
       width: 100%;
       height: 100%;
     }
+
 
 
 

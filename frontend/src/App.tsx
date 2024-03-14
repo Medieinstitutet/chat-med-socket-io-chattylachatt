@@ -104,7 +104,7 @@ setSelectedRoom(data)
 const checkIfUsernameValid =  () =>{
   /* Här behöver vi skapa logik för att se om användarnamnet är unikt */
 
-if(image !== ''){
+if(image !== '' ){
 
   if(username !== '' || localStorageUser !== "" ){
 socket?.emit("allroomsForUser", localStorageUser,  username, (valid:boolean, rooms: Room[]) => {
@@ -131,7 +131,7 @@ setAllRooms(data)
   else if(!valid){
 seterrorMessage('Användare finns redan')
 setValidUsername(valid)
-setImage('')
+
 }
 }) 
 } else{
@@ -187,9 +187,22 @@ const handleFindRoom = ()=> {
   }
 
 
+const handelLogOut = () =>{
+
+
+  setValidUsername(false)
+  setLocalStorageUser('')
+  setImage('')
+setUsername('')
+setSelectedAvatar('')
+
+
+}
+
 const handelAddUserSearchRoom = (user:string)  =>  {
   if(username !== user){
     setsearchUserForRoom(user)
+    
   }
    
    
@@ -325,7 +338,8 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
 
  
 
-<section className="sectionOne">      
+<section className="sectionOne">     
+<button className="logout" onClick={handelLogOut}> Logga ut </button> 
 <section className="findRoomContainer">
   <section className="usernameAndImg"> 
  
@@ -349,6 +363,7 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
 <section className="sectionTwo">         
 
 <h2>{ selectedRoom?.roomName.replace(`${username}`,'').toLocaleUpperCase()}</h2>
+
 <section className="allmessageContainer"> 
    
 <AllMessages 
