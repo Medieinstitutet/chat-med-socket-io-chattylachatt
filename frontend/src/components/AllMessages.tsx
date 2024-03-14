@@ -1,27 +1,28 @@
 import { useState, useEffect } from 'react';
-import { Room, } from '../models/Room'
-import io from 'socket.io-client';
+import { Room } from '../models/Room'
 import { Message } from '../models/Message'; 
+import moment from 'moment';
 
 
-const socket = io('http://localhost:3000');
 
 interface Props {
-  selectedRoom: Room;
+  selectedRoom?: Room;
   handelAddUserSearchRoom: (item:string) => void;
   currentUserUsername: string;
   username:string
   localStorageUser:string
   image:string
+  newUppdateMessage?:Message
   setNewUppdateMessage:(newUppdateMessage:Message)=> void
-  UpdateMessage:() => void
+
+  UpdateMessage:(updatedMessage:Message) => void
 }
 
 
-export const AllMessages = ({UpdateMessage, setNewUppdateMessage, selectedRoom, handelAddUserSearchRoom, currentUserUsername, username, localStorageUser, image }: Props) => {
+export const AllMessages = ({UpdateMessage, setNewUppdateMessage,newUppdateMessage, selectedRoom, handelAddUserSearchRoom, currentUserUsername, username, localStorageUser, image }: Props) => {
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
   const [editedMessage, setEditedMessage] = useState('');
- 
+
 
   
   const scrollToBottom = () => {
@@ -35,11 +36,6 @@ export const AllMessages = ({UpdateMessage, setNewUppdateMessage, selectedRoom, 
     scrollToBottom()
   }, [selectedRoom])
   
-    const [messages, setMessages] = useState<Message[]>(selectedRoom.messages);
-
-  useEffect(() => {
-    setMessages(selectedRoom.messages);
-  }, [selectedRoom]);
 
 
 
@@ -58,6 +54,7 @@ export const AllMessages = ({UpdateMessage, setNewUppdateMessage, selectedRoom, 
 
  
   const saveEditedMessage = (cratedAt:string) => {
+    if(selectedRoom){
     const updatedMessage:Message = {
       cratedAt,
       message: editedMessage,
@@ -65,12 +62,12 @@ export const AllMessages = ({UpdateMessage, setNewUppdateMessage, selectedRoom, 
       room: selectedRoom.roomName 
      
     };
-
+console.log(newUppdateMessage)
     setNewUppdateMessage(updatedMessage)
     UpdateMessage(updatedMessage)
     setEditingMessageId(null);
     setEditedMessage('');
-    
+    }
   };
 
 
@@ -92,7 +89,7 @@ export const AllMessages = ({UpdateMessage, setNewUppdateMessage, selectedRoom, 
 
 <section className='message'>
   <div className='bubble bubble-alt rainbow '>
-  <textarea id="myTextarea"   maxLength={50} minLength={3}  value={editedMessage} onChange={(e) => setEditedMessage(e.target.value)} > </textarea>
+  <textarea id="myTextarea" aria-label="message"   maxLength={50} minLength={3}  value={editedMessage} onChange={(e) => setEditedMessage(e.target.value)} > </textarea>
   </div>
 <section className='buttons'>     
               <button className='save-edit-btn' onClick={() => saveEditedMessage(item.cratedAt)}>Spara</button>

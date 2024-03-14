@@ -76,7 +76,7 @@ if(selectedRoom && newMessage !== ''){
       setSelectedRoom(data);
        
     });
-
+   
   };
 
 
@@ -86,15 +86,10 @@ if(selectedRoom && newMessage !== ''){
 
 
 const UpdateMessage= (newUppdateMessage:Message) =>{
-console.log({...newUppdateMessage})
-
 
    socket?.emit('update-message', {...newUppdateMessage}, selectedRoom, (data:Room)=>{
-
 setSelectedRoom(data)
-
    }); 
-
 
 }
 
@@ -334,11 +329,11 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
 <section className="findRoomContainer">
   <section className="usernameAndImg"> 
  
- <img src={image} />
+ <img src={image} alt=''/>
  <h2>{username}</h2>
  </section>
- <input className="findRoomInput" type="text" value={searchUserForRoom} maxLength={10}  onChange={(e:ChangeEvent<HTMLInputElement>) => setsearchUserForRoom(e.target.value)} />
- <button className="findRoomBtn" onClick={handleFindRoom}> <FaSearch /> </button>
+ <input placeholder="användarnamn" className="findRoomInput" type="text" value={searchUserForRoom} maxLength={10}  onChange={(e:ChangeEvent<HTMLInputElement>) => setsearchUserForRoom(e.target.value)} />
+ <button className="findRoomBtn" onClick={handleFindRoom}> {<FaSearch />} </button>
    </section>
 <section className="allRoomsContainer"> 
 {allRooms?.map((item) => (
@@ -363,6 +358,7 @@ username={username}
 currentUserUsername={username}
 localStorageUser={localStorageUser}
 setNewUppdateMessage={setNewUppdateMessage}
+newUppdateMessage={newUppdateMessage}
 image={image}
 UpdateMessage={UpdateMessage}
 />  
