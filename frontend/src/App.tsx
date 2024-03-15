@@ -109,16 +109,18 @@ if(image !== '' ){
   if(username !== '' || localStorageUser !== "" ){
 socket?.emit("allroomsForUser", localStorageUser,  username, (valid:boolean, rooms: Room[]) => {
 if(valid){
-  socket?.emit("join_room", 'main', username, (data: Room) => {
+   socket?.emit("join_room", 'main', username, (data: Room) => {
     setSelectedRoom(data);
  
-  });
- localStorage.setItem("user", username);
+  }); 
+ localStorage.setItem("user", username.toLocaleLowerCase());
  localStorage.setItem("image", image);
   setAllRooms(rooms)
   setValidUsername(valid)
   socket.on(`${username}` , (data:Room[]) => {
     if(data){
+
+
 setAllRooms(data)
 
     }
@@ -151,7 +153,7 @@ setValidUsername(valid)
 
 const handelLocalStorageUser = () =>{
 if(showLocalStorageUser && localstorageImage){
-setUsername(showLocalStorageUser)
+setUsername(showLocalStorageUser.toLocaleLowerCase())
 setLocalStorageUser(showLocalStorageUser)
 setImage(localstorageImage)
 setSelectedAvatar(localstorageImage)
@@ -346,7 +348,7 @@ onClick={checkIfUsernameValid}>Börja Chatta</button>
  <img src={image} alt=''/>
  <h2>{username}</h2>
  </section>
- <input placeholder="användarnamn" className="findRoomInput" type="text" value={searchUserForRoom} maxLength={10}  onChange={(e:ChangeEvent<HTMLInputElement>) => setsearchUserForRoom(e.target.value)} />
+ <input placeholder="användarnamn" className="findRoomInput" type="text" value={searchUserForRoom} maxLength={10}  onChange={(e:ChangeEvent<HTMLInputElement>) => setsearchUserForRoom(e.target.value.toLocaleLowerCase())} />
  <button className="findRoomBtn" onClick={handleFindRoom}> {<FaSearch />} </button>
    </section>
 <section className="allRoomsContainer"> 

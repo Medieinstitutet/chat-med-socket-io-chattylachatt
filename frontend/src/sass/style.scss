@@ -1,7 +1,7 @@
 @use 'variables' as v;
 @use 'mixins';
 @use 'login';
-@use 'AvatarPicker';
+@use 'avatarPicker';
 @use 'allmessages';
 @use 'messageInputAndBtn';
 @use 'findRoom';
@@ -167,6 +167,11 @@ flex-direction: row;
 p{
   margin-left: 1rem;
   margin-top: 0rem;
+  &:hover{
+text-decoration: underline;
+cursor: pointer;
+
+  }
 }
       @include mixins.devices(tablet) {
        width: 100%;
